@@ -7,8 +7,13 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-    <form class="" action="/authz/twitter" method="get">
-      <input type="image" id="twitterLogo" src="/images/sign-in-with-twitter-gray.png" />
-    </form>
+    <ul>
+      <% for(let i = 0; i < users.length; i++){ %>
+        <br>
+        <% for(let key in users[i]) { %>
+          <li><%= users[i][key] %></li>
+        <%  } %>
+      <% }; %>
+    </ul>
   </body>
 </html>
