@@ -6,9 +6,9 @@ let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let session = require('express-session');
 let passport = require('passport')
+let PostgreSqlStore = require('connect-pg-simple')(session);
 require('dotenv').config();
-
-
+require('./config/passport');
 
 //require routes
 let index = require('./routes/index');
@@ -27,14 +27,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
 app.use(session({
+  store: new PostgreSqlStore({
+    conString: "postgres://localhost:5432/staycation_dev"
+  }),
   resave: false,
   saveUninitialized: true,
-  secret: 'bla bla bla'
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    secure: false
+  }
 }));
+app.use(passport.initialize());
 app.use(passport.session());
-require('./config/passport');
 
 //use routes
 app.use('/', index);

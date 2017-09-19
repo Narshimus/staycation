@@ -3,7 +3,7 @@ exports.up = (knex, Promise) => {
     table.increments();
     table.string('username').unique().notNullable();
     table.string('access_token').notNullable();
-    table.string('access_secret').notNullable();
+    table.string('token_secret').notNullable();
     table.string('twitter_ID').notNullable();
     // table.string('email').unique().notNullable();
     // table.string('timezone').notNullable();
