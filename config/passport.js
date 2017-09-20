@@ -13,18 +13,11 @@ let twitterCallbackURL = config.twitterAuth.callbackURL;
 
 //session config
 passport.serializeUser(function(id, done) {
-  console.log('serializeUser', id);
   done(null, id);
 });
 
 passport.deserializeUser(function(id, done) {
-  db.get('users', id).then(function(results) {
-    if (results) {
-      return done(null, id);
-    } else {
-      return done(err);
-    }
-  });
+  done(null, id);
 });
 
 //twitter strategy
@@ -34,10 +27,8 @@ passport.use('twitter-authz', new TwitterStrategy({
     callbackURL: twitterCallbackURL
   },
   function(token, tokenSecret, req, profile, done) {
-    //check if user is logged in
-    // if (!req.user_id) {
-    if (true) {
-
+    //check if user is logged in?
+    if (req.user_id) {
       userUtil.findUser(profile._json.id_str).then(function(results, err) {
         //check if user exists in database
         if (results) {
@@ -55,14 +46,23 @@ passport.use('twitter-authz', new TwitterStrategy({
             // ,
             // profile_pic  : profile._json.profile_image_url
           };
-          userUtil.createUser(req.account).then(function(newDatabaseEntry) {
-            done(null, newDatabaseEntry.id);
+          userUtil.createUser(newUser).then(function(newEntryId) {
+            done(null, newEntryId[0]);
           });
         }
       });
+      //if user is logged in => find user in db and update tokens
     } else {
-      userUtil.updateTokens(req.user_id, token, tokenSecret).then(function() {
-        done(null, req.user_id);
+      userUtil.findUser(profile._json.id_str).then(function(results, err) {
+        if (results) {
+          userUtil.updateTokens(results.id, token, tokenSecret).then(function() {
+            done(null, results.id);
+          });
+        }else {
+          //user is logged in and not in database
+          //delete session?
+          done(null, null);
+        }
       });
     }
   }));

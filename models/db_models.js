@@ -10,7 +10,7 @@ module.exports = {
 
   getQuery: (table, query, value) => knex(table).where(query, value),
 
-  create: (table, data) => knex(table).insert(data).returning('*'),
+  create: (table, data) => knex(table).insert(data).returning('id'),
 
   update: (table, id, data) => knex(table).update(data).where('id', id).returning('*'),
 
