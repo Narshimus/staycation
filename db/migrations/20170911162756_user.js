@@ -7,6 +7,7 @@ exports.up = (knex, Promise) => {
     table.string('twitter_ID').notNullable();
     // table.string('email').unique().notNullable();
     // table.string('timezone').notNullable();
+    // table.string('destination');
     table.boolean('is_admin').defaultTo(false);
     table.timestamps(true,true);
   });

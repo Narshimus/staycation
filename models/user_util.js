@@ -21,7 +21,7 @@ function updateTokens(userId, token, tokenSecret){
 
 function ensureLoggedIn() {
   return function(req, res, next) {
-    if (!req.isAuthenticated || !req.isAuthenticated() || !req.session.passport) {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(401);
       res.redirect('/');
     } else {
@@ -35,6 +35,4 @@ module.exports = {
   createUser    : createUser,
   updateTokens  : updateTokens,
   ensureLoggedIn: ensureLoggedIn
-  // setUserSession: setUserSession
-
 };

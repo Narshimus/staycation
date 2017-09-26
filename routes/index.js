@@ -5,21 +5,29 @@ let passport = require('../config/passport');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if(req.session.passport){
+  if (req.isAuthenticated()) {
     res.redirect('/dashboard')
-  }else {
-  res.render('index', {
-    title: 'Express'
-  });
-}
+  } else {
+    res.render('index', {
+      title: 'Express'
+    });
+  }
 });
 
 //logout and destroy local session
 router.post('/logout', function(req, res) {
   req.logout();
-  req.session.destroy(function (err) {
+  req.session.destroy(function(err) {
     res.redirect('/');
   });
+});
+
+router.get('/confirm-login', function(req,res){
+  if (req.isAuthenticated()) {
+    res.send(req.session);
+  }else {
+    res.sendStatus(401);
+  }
 });
 
 //twitter authorization
